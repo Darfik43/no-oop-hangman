@@ -60,6 +60,7 @@ public class Main {
             "=========";
     private static String currentWord;
     private static int gameState = 0;
+    private static char[] wrongLetters = new char[5];
 
 
     public static void main(String[] args) {
@@ -75,6 +76,7 @@ public class Main {
         if (input == 1) {
             System.out.println("Game starts");
             String gameWord = setGameWord();
+            currentWord = gameWord;
             startGameLoop(gameWord);
         } else if (input == 2) {
             System.exit(0);
@@ -94,11 +96,11 @@ public class Main {
         while (gameState < 6) {
             printGameState(gameState);
             inputLetter(gameWord);
-            printCurrentWord(gameWord);
         }
         if (gameState == 6) {
             printGameState(gameState);
             gameState = 0;
+            System.out.println("Correct word is " + gameWord);
             startOrQuit();
         }
     }
@@ -135,12 +137,17 @@ public class Main {
                 break;
         }
     }
-
     public static boolean isLetterCorrect(String letter, String gameWord) {
         if (gameWord.contains(letter.toLowerCase())) {
             return true;
         } else {
-            gameState++;
+            if (Arrays.toString(wrongLetters).contains(letter)) {
+                System.out.println("You've already done that mistake");
+            } else {
+                wrongLetters[gameState] = letter.charAt(0);
+                gameState++;
+            }
+
             return false;
         }
     }
@@ -159,8 +166,5 @@ public class Main {
                 break;
             }
         } while (true);
-    }
-
-    public static void printCurrentWord(String gameWord) {
     }
 }
