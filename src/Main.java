@@ -76,7 +76,7 @@ public class Main {
         if (input == 1) {
             System.out.println("Game starts");
             String gameWord = setGameWord();
-            currentWord = gameWord;
+            currentWord = createCurrentWord(gameWord);
             startGameLoop(gameWord);
         } else if (input == 2) {
             System.exit(0);
@@ -95,6 +95,7 @@ public class Main {
 
         while (gameState < 6) {
             printGameState(gameState);
+            createCurrentWord(gameWord);
             inputLetter(gameWord);
         }
         if (gameState == 6) {
@@ -139,6 +140,7 @@ public class Main {
     }
     public static boolean isLetterCorrect(String letter, String gameWord) {
         if (gameWord.contains(letter.toLowerCase())) {
+            editCurrentWord(letter, currentWord, gameWord);
             return true;
         } else {
             if (Arrays.toString(wrongLetters).contains(letter)) {
@@ -152,7 +154,7 @@ public class Main {
         }
     }
 
-    public static void inputLetter(String gameWord) {
+    public static String inputLetter(String gameWord) {
         System.out.println("Enter your letter");
         do {
             Scanner scanner = new Scanner(System.in);
@@ -163,8 +165,30 @@ public class Main {
                 System.out.println("Enter the letter please");
             } else {
                 isLetterCorrect(input, gameWord);
-                break;
+                return input;
             }
         } while (true);
+    }
+
+    public static String createCurrentWord(String gameWord) {
+        String result = "";
+        for (int i = 0; i < gameWord.length(); i++) {
+            result = result + "_";
+        }
+        System.out.println(result);
+        return result;
+    }
+    public static void editCurrentWord(String letter, String currentWord, String gameWord) {
+        if (isLetterCorrect(letter, gameWord)) {
+            char corLetter = letter.charAt(0);
+            char[] currentWordArray = currentWord.toCharArray();
+            char[] gameWordArray = gameWord.toCharArray();
+            for (int i = 0; i < currentWordArray.length; i++) {
+                if (gameWordArray[i] == corLetter) {
+                    currentWordArray[i] = corLetter;
+                }
+            }
+            currentWord = Arrays.toString(currentWordArray);
+        }
     }
 }
