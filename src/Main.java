@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
@@ -7,7 +8,6 @@ public class Main {
     private static String[] dictionary = {"order", "red", "door", "sure", "become", "top", "ship", "across", "today",
             "during", "short", "better", "best", "however", "low", "hours", "black", "products", "happened", "whole", "measure",
             "remember", "early", "waves", "reached"};
-    private static Scanner scanner = new Scanner(System.in);
     private static Random random = new Random();
     private static String HANGMAN_STATE_0 = " +---+\n" +
             "  |   |\n" +
@@ -58,24 +58,24 @@ public class Main {
             " / \\  |\n" +
             "      |\n" +
             "=========";
-
-    private static String gameWord;
     private static String currentWord;
-    private static int mistakes = 0;
+    private static int gameState = 0;
 
 
     public static void main(String[] args) {
-//        startOrQuit();
-        setGameWord();
+        startOrQuit();
         int a = 123;
     }
 
     public static void startOrQuit() {
         System.out.println("Enter 1 to start the game, enter 2 to quit the game");
+        Scanner scanner = new Scanner(System.in);
         int input = scanner.nextInt();
 
         if (input == 1) {
-            // startGame
+            System.out.println("Game starts");
+            String gameWord = setGameWord();
+            startGameLoop(gameWord);
         } else if (input == 2) {
             System.exit(0);
         } else {
@@ -83,15 +83,84 @@ public class Main {
         }
     }
 
-    public static void setGameWord() {
+    public static String setGameWord() {
         int index = random.nextInt(0, 25);
-        gameWord = dictionary[index];
+        String gameWord = dictionary[index];
+        return gameWord;
     }
+
     public static void startGameLoop(String gameWord) {
-        int gameState = 0;
 
         while (gameState < 6) {
-
+            printGameState(gameState);
+            inputLetter(gameWord);
+            printCurrentWord(gameWord);
         }
+        if (gameState == 6) {
+            printGameState(gameState);
+            gameState = 0;
+            startOrQuit();
+        }
+    }
+
+    public static void printGameState(int gameState) {
+        switch (gameState) {
+            case 0:
+                System.out.println(HANGMAN_STATE_0);
+                System.out.println("Mistakes = 0");
+                break;
+            case 1:
+                System.out.println(HANGMAN_STATE_1);
+                System.out.println("Mistakes = 1");
+                break;
+            case 2:
+                System.out.println(HANGMAN_STATE_2);
+                System.out.println("Mistakes = 2");
+                break;
+            case 3:
+                System.out.println(HANGMAN_STATE_3);
+                System.out.println("Mistakes = 3");
+                break;
+            case 4:
+                System.out.println(HANGMAN_STATE_4);
+                System.out.println("Mistakes = 4");
+                break;
+            case 5:
+                System.out.println(HANGMAN_STATE_5);
+                System.out.println("Mistakes = 5");
+                break;
+            case 6:
+                System.out.println(HANGMAN_STATE_6);
+                System.out.println("Game is over");
+                break;
+        }
+    }
+
+    public static boolean isLetterCorrect(String letter, String gameWord) {
+        if (gameWord.contains(letter.toLowerCase())) {
+            return true;
+        } else {
+            gameState++;
+            return false;
+        }
+    }
+
+    public static void inputLetter(String gameWord) {
+        System.out.println("Enter your letter");
+        do {
+            Scanner scanner = new Scanner(System.in);
+            String input = scanner.nextLine();
+            if (input.length() > 1) {
+                System.out.println("Enter one letter per turn");
+            } else if (input.matches("[0-9!@#$%^&*()_\\-=+:;\\[\\]{}/<>~`?]")) {
+                System.out.println("Enter the letter please");
+            } else {
+                isLetterCorrect(input, gameWord);
+                break;
+            }
+        } while (true);
+    }
+
+    public static void printCurrentWord(String gameWord) {
     }
 }
